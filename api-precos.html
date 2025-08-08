@@ -46,13 +46,16 @@
         <div class="bg-white p-4 sm:p-6 rounded-xl shadow-md border border-gray-200">
             <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
                 <h2 class="text-2xl font-semibold">Planos Disponíveis</h2>
-                 <div class="flex items-center gap-2">
+                 <div class="flex items-center gap-4">
                     <div class="w-full sm:w-auto sm:max-w-xs">
                         <input type="text" id="searchInput" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Buscar na tabela...">
+                        <!-- Dica de busca adicionada novamente -->
+                        <p class="mt-1 text-xs text-gray-500">Dica: separe os termos por espaço (ex: TIM M2M).</p>
                     </div>
-                    <!-- Botão para recarregar a tabela -->
-                    <button id="reloadBtn" title="Recarregar dados da planilha" class="p-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300">
+                    <!-- Botão para recarregar a tabela com texto -->
+                    <button id="reloadBtn" title="Recarregar dados da planilha" class="flex items-center gap-2 px-3 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 text-sm font-medium">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M20 4l-4 4M4 20l4-4"></path></svg>
+                        <span>Recarregar</span>
                     </button>
                 </div>
             </div>
