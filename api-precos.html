@@ -40,35 +40,30 @@
             <p class="text-gray-600 mt-2">Consulta de planos e valores para a equipe de vendas.</p>
         </header>
 
-        <!-- Seção de Configuração para o Admin -->
-        <div id="admin-config" class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md border border-gray-200 mb-8">
-            <label for="sheetUrl" class="block text-sm font-medium text-gray-700">URL do App da Web (Google Apps Script)</label>
-            <div class="mt-1 flex rounded-md shadow-sm">
-                <input type="text" id="sheetUrl" class="block w-full flex-1 rounded-none rounded-l-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Cole a nova URL da API aqui">
-                <button id="loadSheetBtn" class="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
-                    Carregar Tabela
-                </button>
-            </div>
-             <p class="mt-2 text-xs text-gray-500">O administrador insere a URL aqui. A URL fica salva no seu navegador.</p>
-        </div>
+        <!-- Seção de Configuração do Admin foi REMOVIDA -->
         
         <!-- Seção da Tabela de Preços (Visível para todos) -->
         <div class="bg-white p-4 sm:p-6 rounded-xl shadow-md border border-gray-200">
             <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
                 <h2 class="text-2xl font-semibold">Planos Disponíveis</h2>
-                 <div class="w-full sm:w-auto sm:max-w-xs">
-                    <input type="text" id="searchInput" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Buscar na tabela...">
-                    <p class="mt-1 text-xs text-gray-500">Dica: separe os termos por espaço (ex: TIM M2M).</p>
+                 <div class="flex items-center gap-2">
+                    <div class="w-full sm:w-auto sm:max-w-xs">
+                        <input type="text" id="searchInput" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Buscar na tabela...">
+                    </div>
+                    <!-- Botão para recarregar a tabela -->
+                    <button id="reloadBtn" title="Recarregar dados da planilha" class="p-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M20 4l-4 4M4 20l4-4"></path></svg>
+                    </button>
                 </div>
             </div>
 
-            <div id="loading" class="text-center py-10 hidden">
+            <div id="loading" class="text-center py-10">
                 <p class="text-gray-600">Carregando dados da API...</p>
             </div>
             
             <div id="error" class="text-center py-10 hidden">
                 <p class="text-red-600 font-semibold">Erro ao carregar os dados.</p>
-                <p class="text-gray-500 mt-2">Verifique se a URL do App da Web está correta.</p>
+                <p class="text-gray-500 mt-2">Não foi possível conectar à API de preços.</p>
             </div>
 
             <div id="table-container" class="overflow-x-auto rounded-lg">
@@ -79,31 +74,28 @@
     </div>
 
     <script>
+        // --- CONFIGURAÇÃO PRINCIPAL ---
+        // O link da sua API agora está "escondido" aqui.
+        const SCRIPT_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLin1zM0qmoWv40HtYGG4a6z_jMuYTFY9mjOCZiTjZBCAM4sRiE-VfNo5DPUcMc09SfE1zvm1X367gpnDazs6VzqymlDLX7KPvt5n_XpvMYSSMb_o-DBAiqBq0JxjzJSrfO9_0YzKVYzHEEf1-yF0cP_KRo1vZaqjT5c0LorvlRnlLmMw6ou92P3htPcwappmAaMZCX4-3WC2j4AVsgpNyQSeBOMB1nnikahrJrWnwqfsAfyWlKsfqyTlEtAQ9AXnAL3jTpCjbNLG-bbBXglyYwVHXSffA&lib=MhvZC4O9qDP8EPfJfHAGyiuEQBoO8zN4x";
+
         // Elementos do DOM
-        const sheetUrlInput = document.getElementById('sheetUrl');
-        const loadSheetBtn = document.getElementById('loadSheetBtn');
         const tableContainer = document.getElementById('table-container');
         const searchInput = document.getElementById('searchInput');
+        const reloadBtn = document.getElementById('reloadBtn');
         const loadingDiv = document.getElementById('loading');
         const errorDiv = document.getElementById('error');
         const noResultsDiv = document.getElementById('no-results');
         let fullTableData = []; // Armazena todos os dados para a busca
 
         // Função para buscar e renderizar a tabela
-        async function loadAndRenderTable(url) {
-            if (!url) {
-                errorDiv.querySelector('p').textContent = 'Por favor, insira a URL do App da Web.';
-                errorDiv.classList.remove('hidden');
-                return;
-            }
-            
+        async function loadAndRenderTable() {
             loadingDiv.classList.remove('hidden');
             tableContainer.innerHTML = '';
             errorDiv.classList.add('hidden');
             noResultsDiv.classList.add('hidden');
 
             try {
-                const response = await fetch(url);
+                const response = await fetch(SCRIPT_URL);
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -117,7 +109,6 @@
                 
                 fullTableData = data; 
                 renderTable(data);
-                localStorage.setItem('m2mSheetUrl', url);
 
             } catch (e) {
                 console.error('Erro ao carregar os dados:', e);
@@ -197,9 +188,7 @@
             }
 
             const filteredData = fullTableData.filter(row => {
-                // Para cada linha, verifica se TODOS os termos de busca estão presentes
                 return searchTerms.every(term => {
-                    // O termo precisa estar presente em PELO MENOS UM dos valores da linha
                     return Object.values(row).some(value =>
                         value && String(value).toLowerCase().includes(term)
                     );
@@ -210,19 +199,12 @@
         }
 
         // Event Listeners
-        loadSheetBtn.addEventListener('click', () => {
-            loadAndRenderTable(sheetUrlInput.value);
-        });
-
         searchInput.addEventListener('input', filterTable);
+        reloadBtn.addEventListener('click', loadAndRenderTable);
 
-        // Carregar a URL salva ao iniciar a página
+        // Carregar a tabela automaticamente ao iniciar a página
         document.addEventListener('DOMContentLoaded', () => {
-            const savedUrl = localStorage.getItem('m2mSheetUrl');
-            if (savedUrl) {
-                sheetUrlInput.value = savedUrl;
-                loadAndRenderTable(savedUrl);
-            }
+            loadAndRenderTable();
         });
 
     </script>
