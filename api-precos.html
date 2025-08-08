@@ -121,6 +121,19 @@
             }
         }
 
+        // Função para formatar números como moeda brasileira (BRL)
+        function formatCurrency(value) {
+            // Converte o valor para número, aceitando tanto ponto quanto vírgula como decimal
+            const number = parseFloat(String(value).replace(',', '.'));
+            
+            // Se não for um número válido, retorna o valor original (ex: texto "N/A")
+            if (isNaN(number)) {
+                return value;
+            }
+            
+            return number.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
         // Função para renderizar a tabela no HTML
         function renderTable(data) {
             if (data.length === 0) {
@@ -131,6 +144,8 @@
             noResultsDiv.classList.add('hidden');
 
             const headers = Object.keys(data[0]);
+            // Palavras-chave para identificar colunas de moeda
+            const currencyKeywords = ['preço', 'valor', 'ativação'];
             
             const table = document.createElement('table');
             table.className = 'min-w-full divide-y divide-gray-200';
@@ -154,7 +169,17 @@
                 headers.forEach(header => {
                     const td = document.createElement('td');
                     td.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-700';
-                    td.innerHTML = highlightSearchTerm(String(rowData[header]));
+                    
+                    let cellValue = String(rowData[header]);
+                    
+                    // Verifica se o cabeçalho da coluna indica que é um valor monetário
+                    const isCurrencyColumn = currencyKeywords.some(keyword => header.toLowerCase().includes(keyword));
+                    
+                    if (isCurrencyColumn) {
+                        cellValue = formatCurrency(cellValue);
+                    }
+                    
+                    td.innerHTML = highlightSearchTerm(cellValue);
                     tr.appendChild(td);
                 });
                 tbody.appendChild(tr);
@@ -174,7 +199,9 @@
             const uniqueTerms = [...new Set(searchTerms)]; 
 
             uniqueTerms.forEach(term => {
-                const regex = new RegExp(`(${term})`, 'gi');
+                // Escapa caracteres especiais para a regex
+                const escapedTerm = term.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                const regex = new RegExp(`(${escapedTerm})`, 'gi');
                 highlightedText = highlightedText.replace(regex, `<span class="search-highlight">$1</span>`);
             });
 
