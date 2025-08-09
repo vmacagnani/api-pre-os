@@ -24,11 +24,11 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-slate-100 text-gray-800">
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
         <header class="text-center mb-8">
-            <!-- ESTRUTURA DO TÍTULO CORRIGIDA -->
+            <!-- ESTRUTURA DO TÍTULO CORRIGIDA PARA MELHOR ALINHAMENTO -->
             <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 flex items-center justify-center gap-4">
                 <svg class="w-8 h-8 sm:w-10 sm:h-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V8m4 8V4m4 12v-4"></path></svg>
                 <span>Tabela de Preços</span>
@@ -130,12 +130,12 @@
             return number.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
         
-        // NOVO: Função para definir cores e logos por operadora
+        // Função para definir cores e logos por operadora (com suas adições)
         function getOperatorInfo(operatorName) {
             const name = String(operatorName).toLowerCase();
             if (name.includes('tim')) return {
                 color: 'bg-blue-100 text-blue-800',
-                logo: 'https://logo.clearbit.com/tim.com.br' // LOGO DA TIM ATUALIZADO
+                logo: 'https://logo.clearbit.com/tim.com.br'
             };
             if (name.includes('vivo')) return {
                 color: 'bg-orange-100 text-orange-800',
